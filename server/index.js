@@ -4,19 +4,21 @@ import dotenv from "dotenv";
 import axios from "axios";
 import cors from "cors";
 import donationRoutes from "./routes/donation.routes.js";
-
+import path from "path";
 dotenv.config();
 
 const app = express();
+
 const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
-
 
 mongoose
   .connect(process.env.MONGO)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB", err));
+
+const __dirname = path.resolve();
 
 app.get("/callback", async (req, res) => {
   const code = req.query.code;
@@ -41,6 +43,10 @@ app.get("/callback", async (req, res) => {
 
 app.use("/server/donation", donationRoutes);
 
+app.use(express.static(path.join(__dirname, "/client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
