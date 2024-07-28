@@ -44,7 +44,7 @@ app.get("/callback", async (req, res) => {
 app.use("/server/donation", donationRoutes);
 
 app.use(express.static(path.join(__dirname, "/client/dist")));
-app.get("*", (req, res) => {
+app.get("*", (_req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 
